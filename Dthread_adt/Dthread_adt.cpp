@@ -27,7 +27,7 @@ template<class T>list_s<T>::~list_s()
 	node_s<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node_s<T>* tmp = curr;
+		node_s<T>* tmp = curr;//retain pointer to current node so it can be deleted
 		curr = curr->next;
 		delete(tmp);
 	}
@@ -55,7 +55,7 @@ template<class T>list_d<T>::~list_d()
 	node_d<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node_d<T>* tmp = curr;
+		node_d<T>* tmp = curr;//retain pointer to current node so it can be deleted
 		curr = curr->next;
 		delete(tmp);
 	}
@@ -80,11 +80,11 @@ template<class T> bool list_d<T>::contains(T d)
 
 template<class T>stack<T>::~stack()
 {
-	node_s<T>* curr = this->list<T>_s::head;
+	node_s<T>* curr = this->list_s<T>::head;
 	node_s<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node_s<T>* tmp = curr;
+		node_s<T>* tmp = curr; //retain pointer to current node so it can be deleted
 		curr = curr->next;
 		delete(tmp);
 	}
@@ -92,27 +92,27 @@ template<class T>stack<T>::~stack()
 	this->list_s<T>::tail = nullptr;
 }
 
-template<class T>void stack<T>::push(T d)
+template<class T>void stack<T>::push(T d)//stack works by LIFO principle ->new elements are added at the head
 {
-	if (this->list_s<T>::head == nullptr)
+	if (this->list_s<T>::head == nullptr)//case if list is empty
 	{
 		
 		this->list_s<T>::head = new node_s<T>(d);
-		this->list_s<T>::tail = this->list_s<T>::head;
+		this->list_s<T>::tail = this->list_s<T>::head;//set tail to head
 	}
-	else
+	else//case if list has elements in it
 	{
 		node_s<T>*curr = new node_s<T>(d);
 		curr->next = this->list_s<T>::head;
-		this->list_s<T>::head = curr;
+		this->list_s<T>::head = curr;//tails does not get reset for the stack
 	}
 	
 }
 
-template<class T>T stack<T>::pop()
+template<class T>T stack<T>::pop()//stacks works by LIFO principle ->pop always removes the head item
 {
-	T ret = this->list_s<T>::head->get();
-	node_s<T>* curr = this->list_s<T>::head->next;
+	T ret = this->list_s<T>::head->get();//retain value of current head
+	node_s<T>* curr = this->list_s<T>::head->next;//retain current head
 	delete (this->list_s<T>::head);
 	this->list_s<T>::head = curr;
 	return ret;
