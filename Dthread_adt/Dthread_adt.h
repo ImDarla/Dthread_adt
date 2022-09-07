@@ -81,10 +81,11 @@ namespace tsdt
 	* */
 	template<class T> class list_s
 	{
-	protected:
+	private:
+		std::binary_semaphore sem{ 1 };
 		node_s<T>* head;
 		node_s<T>* tail;
-
+	public:
 		list_s() :head(nullptr), tail(nullptr)
 		{
 
@@ -92,8 +93,16 @@ namespace tsdt
 
 		~list_s();
 
-	public:
+	
 		bool contains(T);
+
+		void s_push(T);
+		void q_push(T);
+		T pop();
+
+		void ts_push(T);
+		void tq_push(T);
+		T t_pop();
 		
 
 	};
@@ -118,9 +127,20 @@ namespace tsdt
 
 		~list_d();
 
+		node_d<T>* find_place(T);
+		node_d<T>* t_find_place(T);
+
 	public:
 		bool contains(T);
+		bool T_contains(T);
 
+		void add(T);
+		void u_add(T);
+		T rem(T);
+
+		void t_add(T);
+		void  tu_add(T);
+		T t_rem(T)
 
 	};
 
