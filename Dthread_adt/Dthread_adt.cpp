@@ -8,37 +8,26 @@
 
 using namespace tsdt;
 
-template<class T>node<T>::node(T d)
-{
-	this->data = d;
-	this->next = nullptr;
-	this->prev = nullptr;
-	
-}
 
-template<class T>node<T>::~node()
-{
 
-}
-
-template<class T>T node<T>::get()
+template<class T>T node_s<T>::get()
 {
 	return this->data;
 }
 
-template<class T>list<T>::list()
+template<class T>T node_d<T>::get()
 {
-	this->head = nullptr;
-	this->tail = nullptr;
+	return this->data;
 }
 
-template<class T>list<T>::~list()
+
+template<class T>list_s<T>::~list_s()
 {
-	node<T>* curr = this->head;
-	node<T>* tmp = nullptr;
+	node_s<T>* curr = this->head;
+	node_s<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node<T>* tmp = curr;
+		node_s<T>* tmp = curr;
 		curr = curr->next;
 		delete(tmp);
 	}
@@ -46,9 +35,37 @@ template<class T>list<T>::~list()
 	this->tail = nullptr;
 }
 
-template<class T> bool list<T>::contains(T d)
+template<class T> bool list_s<T>::contains(T d)
 {
-	node<T>* curr = head;
+	node_s<T>* curr = head;
+	while (curr != nullptr)
+	{
+		if (curr->get == d)
+		{
+			return true;
+		}
+		curr = curr->next;
+	}
+	return false;
+}
+
+template<class T>list_d<T>::~list_d()
+{
+	node_d<T>* curr = this->head;
+	node_d<T>* tmp = nullptr;
+	while (curr != nullptr)
+	{
+		node_d<T>* tmp = curr;
+		curr = curr->next;
+		delete(tmp);
+	}
+	this->head = nullptr;
+	this->tail = nullptr;
+}
+
+template<class T> bool list_d<T>::contains(T d)
+{
+	node_d<T>* curr = head;
 	while (curr != nullptr)
 	{
 		if (curr->get == d)
@@ -61,44 +78,43 @@ template<class T> bool list<T>::contains(T d)
 }
 
 
-
 template<class T>stack<T>::~stack()
 {
-	node<T>* curr = this->list<T>::head;
-	node<T>* tmp = nullptr;
+	node_s<T>* curr = this->list<T>_s::head;
+	node_s<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node<T>* tmp = curr;
+		node_s<T>* tmp = curr;
 		curr = curr->next;
 		delete(tmp);
 	}
-	this->list<T>::head = nullptr;
-	this->list<T>::tail = nullptr;
+	this->list_s<T>::head = nullptr;
+	this->list_s<T>::tail = nullptr;
 }
 
 template<class T>void stack<T>::push(T d)
 {
-	if (this->list<T>::head == nullptr)
+	if (this->list_s<T>::head == nullptr)
 	{
 		
-		this->list<T>::head = new node<T>(d);
-		this->list<T>::tail = this->list<T>::head;
+		this->list_s<T>::head = new node_s<T>(d);
+		this->list_s<T>::tail = this->list_s<T>::head;
 	}
 	else
 	{
-		node<T>*curr = new node<T>(d);
-		curr->next = this->list<T>::head;
-		this->list<T>::head = curr;
+		node_s<T>*curr = new node_s<T>(d);
+		curr->next = this->list_s<T>::head;
+		this->list_s<T>::head = curr;
 	}
 	
 }
 
 template<class T>T stack<T>::pop()
 {
-	T ret = this->list<T>::head->get();
-	node<T>* curr = this->list<T>::head->next;
-	delete (this->list<T>::head);
-	this->list<T>::head = curr;
+	T ret = this->list_s<T>::head->get();
+	node_s<T>* curr = this->list_s<T>::head->next;
+	delete (this->list_s<T>::head);
+	this->list_s<T>::head = curr;
 	return ret;
 }
 
@@ -106,11 +122,11 @@ template<class T>T stack<T>::pop()
 
 template<class T>queue<T>::~queue()
 {
-	node<T>* curr = this->head;
-	node<T>* tmp = nullptr;
+	node_s<T>* curr = this->head;
+	node_s<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node<T>* tmp = curr;
+		node_s<T>* tmp = curr;
 		curr = curr->next;
 		delete(tmp);
 	}
@@ -120,15 +136,15 @@ template<class T>queue<T>::~queue()
 
 template<class T> void queue<T>::push(T d)
 {
-	if (this->list<T>::head == nullptr)
+	if (this->list_s<T>::head == nullptr)
 	{
-		this->list<T>::head = new node<T>(d);
-		this->list<T>::tail = this->list<T>::head;
+		this->list_s<T>::head = new node_s<T>(d);
+		this->list_s<T>::tail = this->list_s<T>::head;
 	}
 	else
 	{
-		this->list<T>::tail->next = new node<T>(d);
-		this->list<T>::tail = this->list<T>::tail->next;
+		this->list_s<T>::tail->next = new node_s<T>(d);
+		this->list_s<T>::tail = this->list_s<T>::tail->next;
 	}
 
 
@@ -136,14 +152,14 @@ template<class T> void queue<T>::push(T d)
 
 template<class T> T queue<T>::pop()
 {
-	T ret = this->list<T>::head->get();
-	node<T>* curr = this->list<T>::head->next;
-	delete (this->list<T>::head);
-	this->list<T>::head = curr;
+	T ret = this->list_s<T>::head->get();
+	node_s<T>* curr = this->list_s<T>::head->next;
+	delete (this->list_s<T>::head);
+	this->list_s<T>::head = curr;
 	return ret;
 }
 
-template<class T> void sorted<T>::insert(node<T>* a, node<T>* b)//insert b after a
+template<class T> void sorted<T>::insert(node_d<T>* a, node_d<T>* b)//insert b after a
 {
 	
 	b->next = a->next;
@@ -155,34 +171,34 @@ template<class T> void sorted<T>::insert(node<T>* a, node<T>* b)//insert b after
 
 template<class T> sorted<T>::sorted(std::function<int(T, T)> j)
 {
-	this->list<T>::head = nullptr;
+	this->list_d<T>::head = nullptr;
 	this->func = j;
 }
 
 template<class T>sorted<T>::~sorted()
 {
-	node<T>* curr = this->list<T>::head;
-	node<T>* tmp = nullptr;
+	node_d<T>* curr = this->list_d<T>::head;
+	node_d<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node<T>* tmp = curr;
+		node_d<T>* tmp = curr;
 		curr = curr->next;
 		delete(tmp);
 	}
-	this->list<T>::head = nullptr;
-	this->list<T>::tail = nullptr;
+	this->list_d<T>::head = nullptr;
+	this->list_d<T>::tail = nullptr;
 }
 
 template<class T> void sorted<T>::add(T d)
 {
-	if (this->list<T>::head == nullptr)
+	if (this->list_d<T>::head == nullptr)
 	{
-		this->list<T>::head = new node<T>(d);
+		this->list_d<T>::head = new node_d<T>(d);
 	}
 	else
 	{
-		node<T>* curr = this->list<T>::head;
-		node<T>* prev = nullptr;
+		node_d<T>* curr = this->list_d<T>::head;
+		node_d<T>* prev = nullptr;
 		while (curr != nullptr && this->func(curr->get(), d) < 0)
 		{
 			prev = curr;
@@ -190,21 +206,21 @@ template<class T> void sorted<T>::add(T d)
 		}
 		if (curr == nullptr)
 		{
-			prev->next = new node<T>(d);
+			prev->next = new node_d<T>(d);
 
 		}
 		else
 		{
 			if (curr->prev == nullptr)
 			{
-				node<T>* temp = new node<T>(d);
-				temp->next = this->list<T>::head;
-				this->list<T>::head->prev = temp;
-				this->list<T>::head = temp;
+				node_d<T>* temp = new node_d<T>(d);
+				temp->next = this->list_d<T>::head;
+				this->list_d<T>::head->prev = temp;
+				this->list_d<T>::head = temp;
 			}
 			else
 			{
-				node<T>* temp = new node<T>(d);
+				node_d<T>* temp = new node_d<T>(d);
 				this->insert(curr->prev, temp);
 			}
 		}

@@ -1,7 +1,6 @@
 #pragma once
-#include "pch.h"
-#include "framework.h"
 
+#include<semaphore>
 
 namespace tsdt
 {
@@ -16,49 +15,112 @@ namespace tsdt
 
 
 	/**
-	* @brief node type for each list storing 2 pointer for doubly linked lists and a T type data variable
+	* @brief node type for each list storing 1 pointer for single linked lists and a T type data variable
 	* 
 	* the prev pointer is only used for sorted lists
 	* 
 	* 
 	* */
-	template<class T>class node
+	template<class T>class node_s
 	{
 	private:
 		T data;
 
 	public:
-		node<T>* next;
+		node_s<T>* next;
 
-		node<T>* prev;
+		node_s(T d) : data(d)
+		{
 
-		node(T);
+		}
 
-		~node();
+		~node_s()
+		{
+
+		}
 
 		T get();
 	};
 
 	/**
-	* @brief list primitive as parent class of the other data types
+	* @brief node type for each list storing 2 pointer for doubly linked lists and a T type data variable
+	*
+	* the prev pointer is only used for sorted lists
+	*
+	*
+	* */
+	template<class T>class node_d
+	{
+	private:
+		T data;
+
+	public:
+		node_d<T>* next;
+
+		node_d<T>* prev;
+
+		node_d(T d): data(d)
+		{
+
+		}
+
+		~node_d()
+		{
+
+		}
+
+		T get();
+	};
+
+	/**
+	* @brief list primitive as parent class of single linked based ADTs
 	* 
 	* 
 	* 
 	* 
 	* */
-	template<class T> class list
+	template<class T> class list_s
 	{
 	protected:
-		node<T>* head;
-		node<T>* tail;
+		node_s<T>* head;
+		node_s<T>* tail;
 
-		list();
+		list_s() :head(nullptr), tail(nullptr)
+		{
 
-		~list();
+		}
+
+		~list_s();
 
 	public:
 		bool contains(T);
 		
+
+	};
+
+	/**
+	* @brief list primitive as parent class of doubly linked list ADT
+	*
+	*
+	*
+	*
+	* */
+	template<class T> class list_d
+	{
+	protected:
+		node_d<T>* head;
+		node_d<T>* tail;
+
+		list_d() :head(nullptr), tail(nullptr)
+		{
+
+		}
+
+		~list_d();
+
+	public:
+		bool contains(T);
+
 
 	};
 
@@ -69,7 +131,7 @@ namespace tsdt
 	*
 	*
 	* */
-	template<class T>class stack :public list<T>
+	template<class T>class stack :public list_s<T>
 	{
 
 	private:
@@ -93,7 +155,7 @@ namespace tsdt
 	*
 	*
 	* */
-	template<class T> class queue :public list<T>
+	template<class T> class queue :public list_s<T>
 	{
 	private:
 		//node<T>* head;
@@ -115,10 +177,10 @@ namespace tsdt
 	*
 	*
 	* */
-	template<class T> class sorted :public list<T>
+	template<class T> class sorted :public list_d<T>
 	{
 	private:
-		void insert(node<T>*, node<T>*);
+		void insert(node_d<T>*, node_d<T>*);
 		std::function<int(T, T)> func;// comparison function; returns negative if left is bigger, 0 when equal, positive when right is bigger
 	public:
 
@@ -144,7 +206,7 @@ namespace tsdt
 	template<class T> class s_stack :private stack<T>
 	{
 	private:
-		std::binary_semaphore sem;
+		std::binary_semaphore sem{ 1 };
 	public:
 
 
@@ -169,7 +231,7 @@ namespace tsdt
 	template<class T> class s_queue : private queue<T>
 	{
 	private:
-		std::binary_semaphore sem;
+		std::binary_semaphore sem{ 1 };
 	public:
 
 		~s_queue();
@@ -191,7 +253,7 @@ namespace tsdt
 	template<class T> class s_sorted :public sorted<T>
 	{
 	private:
-		std::binary_semaphore sem;
+		std::binary_semaphore sem{ 1 };
 		std::function<int(T, T)> func;// comparison function; returns negative if left is bigger, 0 when equal, positive when right is bigger
 	public:
 		s_sorted(std::function<int(T, T)>);
@@ -217,7 +279,7 @@ namespace tsdt
 	{
 	private:
 		T data;
-		std::binary_semaphore sem;
+		std::binary_semaphore sem{ 1 };
 		
 
 	public:
