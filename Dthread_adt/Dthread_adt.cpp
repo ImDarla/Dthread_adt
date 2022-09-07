@@ -229,7 +229,7 @@ template<class T> void sorted<T>::add(T d)
 
 template<class T> int sorted<T>::remove(T d)
 {
-	node<T>* curr = this->list<T>::head;
+	node_d<T>* curr = this->list_d<T>::head;
 	while (curr->get() != d&&curr!=nullptr)
 	{
 		curr = curr->next;
@@ -253,11 +253,11 @@ template<class T> int sorted<T>::remove(T d)
 
 template<class T>s_stack<T>::~s_stack()
 {
-	node<T>* curr = this->head;
-	node<T>* tmp = nullptr;
+	node_s<T>* curr = this->head;
+	node_s<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node<T>* tmp = curr;
+		node_s<T>* tmp = curr;
 		curr = curr->next;
 		delete(tmp);
 	}
@@ -285,7 +285,7 @@ template<class T> bool s_stack<T>::contains(T d)
 {
 	bool ret;
 	this->sem.acquire();
-	ret=list<T>::contains(d);
+	ret=list_s<T>::contains(d);
 	this->sem.release();
 	return ret;
 }
@@ -294,11 +294,11 @@ template<class T> bool s_stack<T>::contains(T d)
 
 template<class T>s_queue<T>::~s_queue()
 {
-	node<T>* curr = this->head;
-	node<T>* tmp = nullptr;
+	node_s<T>* curr = this->head;
+	node_s<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node<T>* tmp = curr;
+		node_s<T>* tmp = curr;
 		curr = curr->next;
 		delete(tmp);
 	}
@@ -326,7 +326,7 @@ template<class T> bool s_queue<T>::contains(T d)
 {
 	bool ret;
 	this->sem.acquire();
-	ret = list<T>::contains(d);
+	ret = list_s<T>::contains(d);
 	this->sem.release();
 	return ret;
 }
@@ -339,11 +339,11 @@ template<class T> s_sorted<T>::s_sorted(std::function<int(T, T)> j)
 
 template<class T>s_sorted<T>::~s_sorted()
 {
-	node<T>* curr = this->head;
-	node<T>* tmp = nullptr;
+	node_d<T>* curr = this->head;
+	node_d<T>* tmp = nullptr;
 	while (curr != nullptr)
 	{
-		node<T>* tmp = curr;
+		node_d<T>* tmp = curr;
 		curr = curr->next;
 		delete(tmp);
 	}
@@ -372,7 +372,7 @@ template<class T> bool s_sorted<T>::contains(T d)
 {
 	bool ret;
 	this->sem.acquire();
-	ret = list<T>::contains(d);
+	ret = list_d<T>::contains(d);
 	this->sem.release();
 	return ret;
 }
