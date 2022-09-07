@@ -144,59 +144,9 @@ namespace tsdt
 
 	};
 
-	/**
-	* @brief stack data type, operators: void push(T), T pop()
-	*
-	*
-	*
-	*
-	* */
-	template<class T>class stack :public list_s<T>
-	{
 
-	private:
-		//node<T>* head;
-		//node<T>* tail;
-
-
-	public:
-		
-		~stack();
-
-		void push(T);
-
-		T pop();
-	};
-
-	/**
-	* @brief queue data type
-	*
-	*
-	*
-	*
-	* */
-	template<class T> class queue :public list_s<T>
-	{
-	private:
-		//node<T>* head;
-		//node<T>* tail;
-
-
-	public:
-		~queue();
-
-		void push(T);
-
-		T pop();
-	};
-
-	/**
-	* @brief sorted list data type, constructor takes a std
-	*
-	*
-	*
-	*
-	* */
+	//REMOVE
+	
 	template<class T> class sorted :public list_d<T>
 	{
 	private:
@@ -216,52 +166,7 @@ namespace tsdt
 		
 	};
 
-	/**
-	* @brief
-	*
-	*
-	*
-	*
-	* */
-	template<class T> class s_stack :private stack<T>
-	{
-	private:
-		std::binary_semaphore sem{ 1 };
-	public:
-
-
-		~s_stack();
-
-		void s_push(T);
-
-		T s_pop();
-
-		bool contains(T);
-
-
-	};
-
-	/**
-	* @brief
-	*
-	*
-	*
-	*
-	* */
-	template<class T> class s_queue : private queue<T>
-	{
-	private:
-		std::binary_semaphore sem{ 1 };
-	public:
-
-		~s_queue();
-
-		void s_push(T);
-
-		T s_pop();
-
-		bool contains(T);
-	};
+	
 
 	/**
 	* @brief

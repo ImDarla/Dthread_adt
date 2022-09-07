@@ -49,6 +49,68 @@ template<class T> bool list_s<T>::contains(T d)
 	return false;
 }
 
+template<class T> void list_s<T>::s_push(T d)
+{
+	if (this->head == nullptr)
+	{
+		this->head = new node_s<T>(d);
+		this->tail = head;
+	}
+	else
+	{
+		node_s<T>* curr = new node_s<T>(d);
+		curr->next = this->head;
+		this->head = curr;
+	}
+}
+
+template<class T> void list_s<T>::q_push(T d)
+{
+	if (this->head == nullptr)
+	{
+		this->head = new node_s<T>(d);
+		this->tail = head;
+	}
+	else
+	{
+		this->tail->next = new node_s<T>(d);
+		this->tail = this->tail->next;
+	}
+	
+}
+
+template<class T> T list_s<T>::pop()
+{
+	T ret = this->head->get();
+	node_s<T>* curr = this->head;
+	this->head = this->head->next;
+	delete curr;
+	return ret;
+}
+
+template<class T> void list_s<T>::ts_push(T d)
+{
+	this->sem.acquire();
+	this->s_push(d);
+	this->sem.release();
+}
+
+template<class T> void list_s<T>::tq_push(T d)
+{
+	this->sem.aquire();
+	this->q_push(d);
+	this->sem.release();
+}
+
+template <class T> T list_s<T>::t_pop()
+{
+	this->sem.acquire();
+	T ret = this->pop();
+	this->sem.release();
+	return ret;
+}
+
+
 template<class T>list_d<T>::~list_d()
 {
 	node_d<T>* curr = this->head;
@@ -77,87 +139,8 @@ template<class T> bool list_d<T>::contains(T d)
 	return false;
 }
 
+//REMOVE
 
-template<class T>stack<T>::~stack()
-{
-	node_s<T>* curr = this->list_s<T>::head;
-	node_s<T>* tmp = nullptr;
-	while (curr != nullptr)
-	{
-		node_s<T>* tmp = curr; //retain pointer to current node so it can be deleted
-		curr = curr->next;
-		delete(tmp);
-	}
-	this->list_s<T>::head = nullptr;
-	this->list_s<T>::tail = nullptr;
-}
-
-template<class T>void stack<T>::push(T d)//stack works by LIFO principle ->new elements are added at the head
-{
-	if (this->list_s<T>::head == nullptr)//case if list is empty
-	{
-		
-		this->list_s<T>::head = new node_s<T>(d);
-		this->list_s<T>::tail = this->list_s<T>::head;//set tail to head
-	}
-	else//case if list has elements in it
-	{
-		node_s<T>*curr = new node_s<T>(d);
-		curr->next = this->list_s<T>::head;
-		this->list_s<T>::head = curr;//tails does not get reset for the stack
-	}
-	
-}
-
-template<class T>T stack<T>::pop()//stacks works by LIFO principle ->pop always removes the head item
-{
-	T ret = this->list_s<T>::head->get();//retain value of current head
-	node_s<T>* curr = this->list_s<T>::head->next;//retain current head
-	delete (this->list_s<T>::head);
-	this->list_s<T>::head = curr;
-	return ret;
-}
-
-
-
-template<class T>queue<T>::~queue()
-{
-	node_s<T>* curr = this->head;
-	node_s<T>* tmp = nullptr;
-	while (curr != nullptr)
-	{
-		node_s<T>* tmp = curr;
-		curr = curr->next;
-		delete(tmp);
-	}
-	this->head = nullptr;
-	this->tail = nullptr;
-}
-
-template<class T> void queue<T>::push(T d)
-{
-	if (this->list_s<T>::head == nullptr)
-	{
-		this->list_s<T>::head = new node_s<T>(d);
-		this->list_s<T>::tail = this->list_s<T>::head;
-	}
-	else
-	{
-		this->list_s<T>::tail->next = new node_s<T>(d);
-		this->list_s<T>::tail = this->list_s<T>::tail->next;
-	}
-
-
-}
-
-template<class T> T queue<T>::pop()
-{
-	T ret = this->list_s<T>::head->get();
-	node_s<T>* curr = this->list_s<T>::head->next;
-	delete (this->list_s<T>::head);
-	this->list_s<T>::head = curr;
-	return ret;
-}
 
 template<class T> void sorted<T>::insert(node_d<T>* a, node_d<T>* b)//insert b after a
 {
@@ -251,85 +234,7 @@ template<class T> int sorted<T>::remove(T d)
 
 
 
-template<class T>s_stack<T>::~s_stack()
-{
-	node_s<T>* curr = this->head;
-	node_s<T>* tmp = nullptr;
-	while (curr != nullptr)
-	{
-		node_s<T>* tmp = curr;
-		curr = curr->next;
-		delete(tmp);
-	}
-	this->head = nullptr;
-	this->tail = nullptr;
-}
 
-template<class T> void s_stack<T>::s_push(T d)
-{
-	this->sem.acquire();
-	stack<T>::push(d);
-	this->sem.release();
-}
-
-template<class T> T s_stack<T>::s_pop()
-{
-	T ret;
-	this->sem.acquire();
-	ret = stack<T>::pop();
-	this->sem.release();
-	return ret;
-}
-
-template<class T> bool s_stack<T>::contains(T d)
-{
-	bool ret;
-	this->sem.acquire();
-	ret=list_s<T>::contains(d);
-	this->sem.release();
-	return ret;
-}
-
-
-
-template<class T>s_queue<T>::~s_queue()
-{
-	node_s<T>* curr = this->head;
-	node_s<T>* tmp = nullptr;
-	while (curr != nullptr)
-	{
-		node_s<T>* tmp = curr;
-		curr = curr->next;
-		delete(tmp);
-	}
-	this->head = nullptr;
-	this->tail = nullptr;
-}
-
-template<class T> void s_queue<T>::s_push(T d)
-{
-	this->sem.acquire();
-	queue<T>::push(d);
-	this->sem.release();
-}
-
-template<class T> T s_queue<T>::s_pop()
-{
-	T ret;
-	this->sem.acquire();
-	ret =queue<T>::pop();
-	this->sem.release();
-	return ret;
-}
-
-template<class T> bool s_queue<T>::contains(T d)
-{
-	bool ret;
-	this->sem.acquire();
-	ret = list_s<T>::contains(d);
-	this->sem.release();
-	return ret;
-}
 
 template<class T> s_sorted<T>::s_sorted(std::function<int(T, T)> j)
 {
