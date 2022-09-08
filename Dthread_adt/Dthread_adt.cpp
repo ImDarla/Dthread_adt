@@ -221,11 +221,18 @@ template<class T, typename F> bool list_d<T, F>::insert_t(node_t<T>* p, T d, boo
 		if (p->lc == nullptr)
 		{
 			p->lc = new node_d<T>(d);
+			p->lw = 1;
 			return true;
 		}
 		else
 		{
-
+			bool ret = this->insert(p->lc, d, true);
+			if (ret != false)
+			{
+				p->lw = p->lc->lw + p->lc->rw;
+			}
+			
+			return ret;
 		}
 	}
 	else
@@ -233,11 +240,18 @@ template<class T, typename F> bool list_d<T, F>::insert_t(node_t<T>* p, T d, boo
 		if (p->rc == nullptr)
 		{
 			p->rc = new node_d<T>(d);
+			p->rw = 1;
 			return true;
 		}
 		else
 		{
-
+			bool ret = this->insert(p->rc, d, false);
+			if (ret != false)
+			{
+				p->rw = p->rc->lw + p->rc->rw;
+			}
+			
+			return ret;
 		}
 	}
 }
@@ -276,11 +290,11 @@ template<class T, typename F> void list_d<T, F>::update_weight(node_t<T>* p, boo
 		{
 			if (p->lc != nullptr)
 			{
-				update_weight(p->lc,true)
+				update_weight(p->lc, true);
 			}
 			if (p->rc != nullptr)
 			{
-				update_weight(p->rc,false)
+				update_weight(p->rc, false);
 			}
 			if (left)
 			{
