@@ -172,6 +172,8 @@ namespace tsdt
 		void insert(node_d<T>*, node_d<T>*);
 		T splice(node_d<T>*);
 
+		bool insert_t(node_t<T>* , T , bool);
+
 		void rotl();
 		void rotr();
 		void update_weight(node_t<T>*, bool);

@@ -205,6 +205,43 @@ template<class T, typename F> void list_d<T, F>::insert(node_d<T>* a, node_d<T>*
 
 }
 
+template<class T, typename F> bool list_d<T, F>::insert_t(node_t<T>* p, T d, bool left)//FIX different addition?
+{
+	if (p == nullptr)
+	{
+		this->head = new node_d<T>(d);
+		return true;
+	}
+	if (F(p->get(), d) == 0)
+	{
+		return false;
+	}
+	if (F(p->get(), d) < 0)
+	{
+		if (p->lc == nullptr)
+		{
+			p->lc = new node_d<T>(d);
+			return true;
+		}
+		else
+		{
+
+		}
+	}
+	else
+	{
+		if (p->rc == nullptr)
+		{
+			p->rc = new node_d<T>(d);
+			return true;
+		}
+		else
+		{
+
+		}
+	}
+}
+
 template<class T, typename F> T list_d<T, F>::splice(node_d<T>* p)
 {
 
