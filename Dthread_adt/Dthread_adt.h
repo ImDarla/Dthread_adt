@@ -172,6 +172,10 @@ namespace tsdt
 		void insert(node_d<T>*, node_d<T>*);
 		T splice(node_d<T>*);
 
+		void rotl();
+		void rotr();
+		void update_weight(node_t<T>*, bool);
+
 	public:
 		
 		node_d<T>* contains(T);

@@ -205,7 +205,57 @@ template<class T, typename F> void list_d<T, F>::insert(node_d<T>* a, node_d<T>*
 
 }
 
+template<class T, typename F> T list_d<T, F>::splice(node_d<T>* p)
+{
 
+}
+
+template<class T, typename F> void list_d<T, F>::rotl()
+{
+
+}
+
+template<class T, typename F> void list_d<T, F>::rotr()
+{
+
+}
+
+template<class T, typename F> void list_d<T, F>::update_weight(node_t<T>* p, bool left)
+{
+	if (p->parent != nullptr)
+	{
+		if ((p->lc == nullptr) && (p->rc == nullptr))
+		{
+			if (left)
+			{
+				p->parent->lw++;
+			}
+			else
+			{
+				p->parent->rw++;
+			}
+		}
+		else
+		{
+			if (p->lc != nullptr)
+			{
+				update_weight(p->lc,true)
+			}
+			if (p->rc != nullptr)
+			{
+				update_weight(p->rc,false)
+			}
+			if (left)
+			{
+				p->parent->lw = p->lw + p->rw;
+			}
+			else
+			{
+				p->parent->rw = p->lw + p->rw;
+			}
+		}
+	}
+}
 
 template<class T, typename F> bool list_d<T, F>::add(T d)
 {
@@ -246,14 +296,7 @@ template<class T, typename F> bool list_d<T, F>::add(T d)
 		}
 		else
 		{
-			if (F(this->root->get(), d) < 0)
-			{
-				this->root->lw++;
-			}
-			else
-			{
-				this->root->rw++;
-			}
+			
 			if (F(p->get(), d) < 0)
 			{
 				p->lc= new node_t<T>(d);
@@ -262,17 +305,7 @@ template<class T, typename F> bool list_d<T, F>::add(T d)
 			{
 				p->rc = new node_t<T>(d);
 			}
-			if ((this->root->lw + 1) < this->root->rw)
-			{
-				//rotate left
-			}
-			else
-			{
-				if (this->root->lw > (this->root->rw+1))
-				{
-					//rotate right
-				}
-			}
+			
 			return true;
 		}
 
