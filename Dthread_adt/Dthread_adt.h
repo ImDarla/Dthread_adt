@@ -29,7 +29,7 @@ namespace tsdt
 	public:
 		node_s<T>* next;
 
-		node_s(T d) : data(d)
+		node_s(T d) : data(d), next(nullptr)
 		{
 
 		}
@@ -59,12 +59,45 @@ namespace tsdt
 
 		node_d<T>* prev;
 
-		node_d(T d): data(d)
+		node_d(T d): data(d), next(nullptr), prev(nullptr)
 		{
 
 		}
 
 		~node_d()
+		{
+
+		}
+
+		T get();
+	};
+
+	/**
+	* @brief node type for each list storing 2 pointer for doubly linked lists and a T type data variable
+	*
+	* the prev pointer is only used for sorted lists
+	*
+	*
+	* */
+	template<class T>class node_t
+	{
+	private:
+		T data;
+
+	public:
+		node_t<T>* parent;
+
+		node_t<T>* lc;
+		node_t<T>* rc;
+		int lw;
+		int rw;
+
+		node_t(T d, node_t<T>* p) : data(d), parent(p), lc(nullptr), rc(nullptr), lw(0), rw(0)
+		{
+
+		}
+
+		~node_t()
 		{
 
 		}
@@ -85,6 +118,7 @@ namespace tsdt
 		std::binary_semaphore sem{ 1 };
 		node_s<T>* head;
 		node_s<T>* tail;
+		
 	public:
 		list_s() :head(nullptr), tail(nullptr)
 		{
@@ -96,6 +130,7 @@ namespace tsdt
 	
 		bool contains(T);
 		bool t_contains(T);
+		
 
 		void s_push(T);
 		void q_push(T);
@@ -109,40 +144,46 @@ namespace tsdt
 	};
 
 	/**
-	* @brief list primitive as parent class of doubly linked list ADT
+	* @brief list primitive as parent class of doubly linked list ADT, requires type and comparison function to be supplied, <0 if first argument is bigger, >0 if right argument is bigger
 	*
 	*
 	*
 	*
 	* */
-	template<class T> class list_d
+	template<class T, typename F> class list_d
 	{
 	private:
 		node_d<T>* head;
 		node_d<T>* tail;
+		node_t<T>* root;
 		std::binary_semaphore sem{ 1 };
 		bool inverse;
+		bool unique;
 
-		list_d(bool i=false) :head(nullptr), tail(nullptr), inverse(i)
+		list_d(bool i=false, bool u=false) :head(nullptr), tail(nullptr), root(nullptr), inverse(i), unique(u)
 		{
 
 		}
 
 		~list_d();
 
-		//node_d<T>* find_place(T);
-		//node_d<T>* t_find_place(T);
+		node_t<T>* find_spot(T, node_t<T>*);
+
+		void insert(node_d<T>*, node_d<T>*);
+		T splice(node_d<T>*);
 
 	public:
-		bool contains(T);
+		
+		node_d<T>* contains(T);
 		//bool t_contains(T);
 
-		void add(T);
-		void u_add(T);
+		
+
+		bool add(T);
 		T rem(T);
 
-		void t_add(T);
-		void  tu_add(T);
+		bool t_add(T);
+		
 		T t_rem(T);
 
 	};

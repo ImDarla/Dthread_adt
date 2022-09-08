@@ -20,6 +20,11 @@ template<class T>T node_d<T>::get()
 	return this->data;
 }
 
+template<class T>T  node_t<T>::get()
+{
+	return this->data;
+}
+
 
 template<class T>list_s<T>::~list_s()
 {
@@ -119,7 +124,7 @@ template <class T> T list_s<T>::t_pop()
 }
 
 
-template<class T>list_d<T>::~list_d()
+template<class T,typename F>list_d<T,F>::~list_d()
 {
 	node_d<T>* curr = this->head;
 	node_d<T>* tmp = nullptr;
@@ -133,55 +138,162 @@ template<class T>list_d<T>::~list_d()
 	this->tail = nullptr;
 }
 
-
-
-
-template<class T> bool list_d<T>::contains(T d)
+template<class T, typename F> node_t<T>* list_d<T, F>::find_spot(T d, node_t<T>* p)//returns the parent for the new node
 {
+
+	//FIX add inverse
+	if (F(p->get(), d)== 0)
+	{
+		return nullptr;
+	}
+	if (F(p->get(), d) < 0)
+	{
+		if (p->lc == nullptr)
+		{
+			return p;
+		}
+		else
+		{
+			return this->find_spot(d, p->lc);
+		}
+	}
+	else
+	{
+		if (p->rc == nullptr)
+		{
+			return p;
+		}
+		else
+		{
+			return this->find_spot(d, p->rc);
+		}
+	}
+
+}
+
+
+template<class T, typename F> node_d<T>* list_d<T, F>::contains(T d)
+{
+	
 	node_d<T>* curr = head;
 	while (curr != nullptr)
 	{
 		if (curr->get() == d)
 		{
-			return true;
+			return curr;
 		}
 		curr = curr->next;
 	}
-	return false;
+	return curr;
+	
+	
+}
+
+template<class T, typename F> void list_d<T, F>::insert(node_d<T>* a, node_d<T>* b)
+{
+	b->next = a->next;
+	b->prev = a;
+	a->next = b;
+	if (a!=this->tail)
+	{
+		b->next->prev = b;
+	}
+	else
+	{
+		tail = b;
+	}
+
 }
 
 
 
-template<class T> void list_d<T>::add(T d)
+template<class T, typename F> bool list_d<T, F>::add(T d)
+{
+	if (this->unique == false)
+	{
+		if (this->head == nullptr)
+		{
+			this->head = new node_d<T>(d);
+			this->tail = head;
+			return true;
+		}
+		else
+		{
+			node_d<T>* p = contains(d);
+			if (p != nullptr)
+			{
+				node_d<T>* curr = new node_d<T>(d);
+				insert(p, curr);
+				return true;
+			}
+			else
+			{
+				//FIX implement
+			}
+		}
+	}
+	else
+	{
+		if (this->root == nullptr)
+		{
+			root = new node_t<T>(d);
+			return true;
+		}
+		node_t<T>* p = this->find_spot(d, this->root);
+		if (p == nullptr)
+		{
+			return false;
+		}
+		else
+		{
+			if (F(this->root->get(), d) < 0)
+			{
+				this->root->lw++;
+			}
+			else
+			{
+				this->root->rw++;
+			}
+			if (F(p->get(), d) < 0)
+			{
+				p->lc= new node_t<T>(d);
+			}
+			else
+			{
+				p->rc = new node_t<T>(d);
+			}
+			if ((this->root->lw + 1) < this->root->rw)
+			{
+				//rotate left
+			}
+			else
+			{
+				if (this->root->lw > (this->root->rw+1))
+				{
+					//rotate right
+				}
+			}
+			return true;
+		}
+
+	}
+}
+
+template<class T, typename F> T list_d<T, F>::rem(T d)
 {
 
 }
 
-template<class T> void list_d<T>::u_add(T d)
-{
-
-}
-
-template<class T> T list_d<T>::rem(T d)
-{
-
-}
-
-template<class T> void list_d<T>::t_add(T d)
+template<class T, typename F> bool list_d<T, F>::t_add(T d)
 {
 	this->sem.acquire();
 	this->add(d);
 	this->sem.release();
 }
 
-template<class T> void list_d<T>::tu_add(T d)
-{
-	this->sem.aquire();
-	this->u_add(d);
-	this->sem.release();
-}
 
-template<class T> T list_d<T>::t_rem(T d)
+
+template<class T, typename F> T list_d<T, F>::t_rem(T d)
 {
 	this->sem.acquire();
 	T ret = this->rem();
