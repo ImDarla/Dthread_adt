@@ -49,6 +49,14 @@ template<class T> bool list_s<T>::contains(T d)
 	return false;
 }
 
+template<class T> bool list_s<T>::t_contains(T d)
+{
+	this->sem.acquire();
+	bool ret = this->contains();
+	this->sem.release();
+	return ret;
+}
+
 template<class T> void list_s<T>::s_push(T d)
 {
 	if (this->head == nullptr)
@@ -125,12 +133,15 @@ template<class T>list_d<T>::~list_d()
 	this->tail = nullptr;
 }
 
+
+
+
 template<class T> bool list_d<T>::contains(T d)
 {
 	node_d<T>* curr = head;
 	while (curr != nullptr)
 	{
-		if (curr->get == d)
+		if (curr->get() == d)
 		{
 			return true;
 		}
@@ -139,166 +150,75 @@ template<class T> bool list_d<T>::contains(T d)
 	return false;
 }
 
-//REMOVE
 
 
-template<class T> void sorted<T>::insert(node_d<T>* a, node_d<T>* b)//insert b after a
+template<class T> void list_d<T>::add(T d)
 {
-	
-	b->next = a->next;
-	b->prev = a;
-	a->next = b;
-	b->next->prev = b;
 
 }
 
-template<class T> sorted<T>::sorted(std::function<int(T, T)> j)
+template<class T> void list_d<T>::u_add(T d)
 {
-	this->list_d<T>::head = nullptr;
-	this->func = j;
+
 }
 
-template<class T>sorted<T>::~sorted()
+template<class T> T list_d<T>::rem(T d)
 {
-	node_d<T>* curr = this->list_d<T>::head;
-	node_d<T>* tmp = nullptr;
-	while (curr != nullptr)
-	{
-		node_d<T>* tmp = curr;
-		curr = curr->next;
-		delete(tmp);
-	}
-	this->list_d<T>::head = nullptr;
-	this->list_d<T>::tail = nullptr;
+
 }
 
-template<class T> void sorted<T>::add(T d)
-{
-	if (this->list_d<T>::head == nullptr)
-	{
-		this->list_d<T>::head = new node_d<T>(d);
-	}
-	else
-	{
-		node_d<T>* curr = this->list_d<T>::head;
-		node_d<T>* prev = nullptr;
-		while (curr != nullptr && this->func(curr->get(), d) < 0)
-		{
-			prev = curr;
-			curr = curr->next;
-		}
-		if (curr == nullptr)
-		{
-			prev->next = new node_d<T>(d);
-
-		}
-		else
-		{
-			if (curr->prev == nullptr)
-			{
-				node_d<T>* temp = new node_d<T>(d);
-				temp->next = this->list_d<T>::head;
-				this->list_d<T>::head->prev = temp;
-				this->list_d<T>::head = temp;
-			}
-			else
-			{
-				node_d<T>* temp = new node_d<T>(d);
-				this->insert(curr->prev, temp);
-			}
-		}
-	}
-}
-
-template<class T> int sorted<T>::remove(T d)
-{
-	node_d<T>* curr = this->list_d<T>::head;
-	while (curr->get() != d&&curr!=nullptr)
-	{
-		curr = curr->next;
-	}
-	if (curr == nullptr)
-	{
-		return -1;
-	}
-	
-	else
-	{
-		curr->prev->next = curr->next;
-		curr->next->prev = curr->prev;
-		delete(curr);
-		return 0;
-	}
-}
-
-
-
-
-
-
-template<class T> s_sorted<T>::s_sorted(std::function<int(T, T)> j)
-{
-	this->list<T>::head = nullptr;
-	this->func = j;
-}
-
-template<class T>s_sorted<T>::~s_sorted()
-{
-	node_d<T>* curr = this->head;
-	node_d<T>* tmp = nullptr;
-	while (curr != nullptr)
-	{
-		node_d<T>* tmp = curr;
-		curr = curr->next;
-		delete(tmp);
-	}
-	this->head = nullptr;
-	this->tail = nullptr;
-}
-
-template<class T> void s_sorted<T>::s_add(T d)
+template<class T> void list_d<T>::t_add(T d)
 {
 	this->sem.acquire();
-	sorted<T>::add(d);
-	this->sem.acquire();
-
-}
-
-template<class T> int s_sorted<T>::s_remove(T d)
-{
-	int e = 0;
-	this->sem.acquire();
-	e = sorted<T>::remove(d);
+	this->add(d);
 	this->sem.release();
-	return e;
 }
 
-template<class T> bool s_sorted<T>::contains(T d)
+template<class T> void list_d<T>::tu_add(T d)
 {
-	bool ret;
+	this->sem.aquire();
+	this->u_add(d);
+	this->sem.release();
+}
+
+template<class T> T list_d<T>::t_rem(T d)
+{
 	this->sem.acquire();
-	ret = list_d<T>::contains(d);
+	T ret = this->rem();
 	this->sem.release();
 	return ret;
 }
+//REMOVE
 
-template<class T > s_var<T>::s_var(T d)
+
+
+
+
+
+
+
+template<class T> s_var<T> s_var<T>::assign(const s_var<T>& other) const
 {
-	this->data = d;
-}
-
-template<class T> s_var<T>::~s_var()
-{
-
+	return s_var<T>(other.get());
 }
 
 template<class T> void s_var<T>::set(T d)
 {
+	this->sem.acquire;
 	this->data = d;
+	this->sem.release;
 }
 
 template<class T> T s_var<T>::get()
 {
-	return this->data;
+	this->sem.acquire();
+	T ret= this->data;
+	this->sem.release();
+	return ret;
+}
+
+template<class T> s_var<T> s_var<T>::operator=(const s_var<T>& other)
+{
+	return this->assign(other);
 }
 

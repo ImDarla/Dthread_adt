@@ -95,6 +95,7 @@ namespace tsdt
 
 	
 		bool contains(T);
+		bool t_contains(T);
 
 		void s_push(T);
 		void q_push(T);
@@ -116,23 +117,25 @@ namespace tsdt
 	* */
 	template<class T> class list_d
 	{
-	protected:
+	private:
 		node_d<T>* head;
 		node_d<T>* tail;
+		std::binary_semaphore sem{ 1 };
+		bool inverse;
 
-		list_d() :head(nullptr), tail(nullptr)
+		list_d(bool i=false) :head(nullptr), tail(nullptr), inverse(i)
 		{
 
 		}
 
 		~list_d();
 
-		node_d<T>* find_place(T);
-		node_d<T>* t_find_place(T);
+		//node_d<T>* find_place(T);
+		//node_d<T>* t_find_place(T);
 
 	public:
 		bool contains(T);
-		bool T_contains(T);
+		//bool t_contains(T);
 
 		void add(T);
 		void u_add(T);
@@ -140,58 +143,14 @@ namespace tsdt
 
 		void t_add(T);
 		void  tu_add(T);
-		T t_rem(T)
+		T t_rem(T);
 
 	};
 
 
 	//REMOVE
 	
-	template<class T> class sorted :public list_d<T>
-	{
-	private:
-		void insert(node_d<T>*, node_d<T>*);
-		std::function<int(T, T)> func;// comparison function; returns negative if left is bigger, 0 when equal, positive when right is bigger
-	public:
-
-		sorted(std::function<int(T, T)>);
-		~sorted();
-
-
-
-		void add(T);
-
-		int remove(T);//returns -1 on fail
-
-		
-	};
-
 	
-
-	/**
-	* @brief
-	*
-	*
-	*
-	*
-	* */
-	template<class T> class s_sorted :public sorted<T>
-	{
-	private:
-		std::binary_semaphore sem{ 1 };
-		std::function<int(T, T)> func;// comparison function; returns negative if left is bigger, 0 when equal, positive when right is bigger
-	public:
-		s_sorted(std::function<int(T, T)>);
-
-		~s_sorted();
-
-		void s_add(T);
-
-		int s_remove(T);
-
-		bool contains(T);
-
-	};
 
 	/**
 	* @brief
@@ -205,18 +164,26 @@ namespace tsdt
 	private:
 		T data;
 		std::binary_semaphore sem{ 1 };
-		
+		s_var<T> assign(const s_var<T>&) const;
 
 	public:
-		s_var(T);
+		s_var(T d) :data(d)
+		{
 
-		~s_var();
+		}
+
+		~s_var()
+		{
+
+		}
 
 		void set(T);//maybe use overloading?
 
 		T get();
 
-		bool cointains(T);
+		s_var<T> operator=(const s_var<T>& other);
+
+		
 	};
 
 	
