@@ -123,19 +123,91 @@ template <class T> T list_s<T>::t_pop()
 	return ret;
 }
 
+template<class T, typename F> void list_d<T, F>::fell_tree(node_t<T>* p, bool left)
+{
+	if (p->parent == nullptr)
+	{
+		if ((p->lc == nullptr) && (p->rc == nullptr))
+		{
+			delete p;
+			this->head = nullptr;
+		}
+		else
+		{
+			if (p->lc != nullptr)
+			{
+				this->fell_tree(p->lc, true);
+			}
+			if (p->rc != nullptr)
+			{
+				this->fell_tree(p->rc, false);
+
+			}
+			delete p;
+			this->head = nullptr;
+		}
+	}
+	else
+	{
+		if ((p->lc == nullptr) && (p->rc == nullptr))
+		{
+			if (left)
+			{
+				p->parent->lc = nullptr;
+				delete p;
+			}
+			else
+			{
+				p->parent->rc = nullptr;
+				delete p;
+			}
+		}
+		else
+		{
+			if (p->lc != nullptr)
+			{
+				this->fell_tree(p->lc, true);
+			}
+			if (p->rc != nullptr)
+			{
+				this->fell_tree(p->rc, false);
+
+			}
+			if (left)
+			{
+				p->parent->lc = nullptr;
+				delete p;
+			}
+			else
+			{
+				p->parent->rc = nullptr;
+				delete p;
+			}
+			delete p;
+		}
+	}
+}
 
 template<class T,typename F>list_d<T,F>::~list_d()
 {
-	node_d<T>* curr = this->head;
-	node_d<T>* tmp = nullptr;
-	while (curr != nullptr)
+	if (this->unique == false)
 	{
-		node_d<T>* tmp = curr;//retain pointer to current node so it can be deleted
-		curr = curr->next;
-		delete(tmp);
+		node_d<T>* curr = this->head;
+		node_d<T>* tmp = nullptr;
+		while (curr != nullptr)
+		{
+			node_d<T>* tmp = curr;//retain pointer to current node so it can be deleted
+			curr = curr->next;
+			delete(tmp);
+		}
+		this->head = nullptr;
+		this->tail = nullptr;
 	}
-	this->head = nullptr;
-	this->tail = nullptr;
+	else
+	{
+		fell_tree(this->head, false);
+	}
+	
 }
 
 template<class T, typename F> node_t<T>* list_d<T, F>::find_spot(T d, node_t<T>* p)//returns the parent for the new node
@@ -365,7 +437,7 @@ template<class T, typename F> bool list_d<T, F>::add(T d)
 
 template<class T, typename F> T list_d<T, F>::rem(T d)
 {
-
+	node_t<T>* curr = find_spot(d, this->head);
 }
 
 template<class T, typename F> bool list_d<T, F>::t_add(T d)

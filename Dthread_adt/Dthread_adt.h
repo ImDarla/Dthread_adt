@@ -160,12 +160,8 @@ namespace tsdt
 		bool inverse;
 		bool unique;
 
-		list_d(bool i=false, bool u=false) :head(nullptr), tail(nullptr), root(nullptr), inverse(i), unique(u)
-		{
-
-		}
-
-		~list_d();
+		void fell_tree(node_t<T>*, bool);
+		
 
 		node_t<T>* find_spot(T, node_t<T>*);
 
@@ -183,7 +179,12 @@ namespace tsdt
 		node_d<T>* contains(T);
 		//bool t_contains(T);
 
-		
+		list_d(bool i = false, bool u = false) :head(nullptr), tail(nullptr), root(nullptr), inverse(i), unique(u)
+		{
+
+		}
+
+		~list_d();
 
 		bool add(T);
 		T rem(T);
