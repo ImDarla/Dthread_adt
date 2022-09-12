@@ -166,18 +166,16 @@ namespace tsdt
 		node_t<T>* find_spot(T, node_t<T>*);
 
 		void insert(node_d<T>*, node_d<T>*);
-		T splice(node_d<T>*);
+		
 
 		bool insert_t(node_t<T>* , T , bool);
 
-		void rotl();
-		void rotr();
-		void update_weight(node_t<T>*, bool);
+		
 
 	public:
 		
 		node_d<T>* contains(T);
-		//bool t_contains(T);
+		
 
 		list_d(bool i = false, bool u = false) :head(nullptr), tail(nullptr), root(nullptr), inverse(i), unique(u)
 		{

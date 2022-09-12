@@ -281,104 +281,24 @@ template<class T, typename F> bool list_d<T, F>::insert_t(node_t<T>* p, T d, boo
 {
 	if (p == nullptr)
 	{
-		this->head = new node_d<T>(d);
-		return true;
-	}
-	if (F(p->get(), d) == 0)
-	{
 		return false;
-	}
-	if (F(p->get(), d) < 0)
-	{
-		if (p->lc == nullptr)
-		{
-			p->lc = new node_d<T>(d);
-			p->lw = 1;
-			return true;
-		}
-		else
-		{
-			bool ret = this->insert(p->lc, d, true);
-			if (ret != false)
-			{
-				p->lw = p->lc->lw + p->lc->rw;
-			}
-			
-			return ret;
-		}
 	}
 	else
 	{
-		if (p->rc == nullptr)
+		if (left)
 		{
-			p->rc = new node_d<T>(d);
-			p->rw = 1;
-			return true;
+			p->lc=new node_t<T>(d);
 		}
 		else
 		{
-			bool ret = this->insert(p->rc, d, false);
-			if (ret != false)
-			{
-				p->rw = p->rc->lw + p->rc->rw;
-			}
-			
-			return ret;
+			p->rc=new node_t<T>(d);
 		}
 	}
+	
 }
 
-template<class T, typename F> T list_d<T, F>::splice(node_d<T>* p)
-{
 
-}
 
-template<class T, typename F> void list_d<T, F>::rotl()
-{
-
-}
-
-template<class T, typename F> void list_d<T, F>::rotr()
-{
-
-}
-
-template<class T, typename F> void list_d<T, F>::update_weight(node_t<T>* p, bool left)
-{
-	if (p->parent != nullptr)
-	{
-		if ((p->lc == nullptr) && (p->rc == nullptr))
-		{
-			if (left)
-			{
-				p->parent->lw++;
-			}
-			else
-			{
-				p->parent->rw++;
-			}
-		}
-		else
-		{
-			if (p->lc != nullptr)
-			{
-				update_weight(p->lc, true);
-			}
-			if (p->rc != nullptr)
-			{
-				update_weight(p->rc, false);
-			}
-			if (left)
-			{
-				p->parent->lw = p->lw + p->rw;
-			}
-			else
-			{
-				p->parent->rw = p->lw + p->rw;
-			}
-		}
-	}
-}
 
 template<class T, typename F> bool list_d<T, F>::add(T d)
 {
@@ -401,6 +321,7 @@ template<class T, typename F> bool list_d<T, F>::add(T d)
 			}
 			else
 			{
+				return false;
 				//FIX implement
 			}
 		}
@@ -409,28 +330,15 @@ template<class T, typename F> bool list_d<T, F>::add(T d)
 	{
 		if (this->root == nullptr)
 		{
-			root = new node_t<T>(d);
+			this->root = new node_t<T>(d);
 			return true;
-		}
-		node_t<T>* p = this->find_spot(d, this->root);
-		if (p == nullptr)
-		{
-			return false;
 		}
 		else
 		{
-			
-			if (F(p->get(), d) < 0)
-			{
-				p->lc= new node_t<T>(d);
-			}
-			else
-			{
-				p->rc = new node_t<T>(d);
-			}
-			
-			return true;
+			node_t<T>* p = find_spot(d, this->root);
+			return insert_t(this->root,d);
 		}
+		
 
 	}
 }
