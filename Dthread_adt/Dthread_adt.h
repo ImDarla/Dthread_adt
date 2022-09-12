@@ -159,10 +159,13 @@ namespace tsdt
 		std::binary_semaphore sem{ 1 };
 		bool inverse;
 		bool unique;
+		bool thread;
 
 		void fell_tree(node_t<T>*, bool);
-		
 
+		void print_tree(node_t<T>*);
+		
+		node_d<T>* contains(T);
 		node_t<T>* find_spot(T, node_t<T>*);
 
 		void insert(node_d<T>*, node_d<T>*);
@@ -174,10 +177,10 @@ namespace tsdt
 
 	public:
 		
-		node_d<T>* contains(T);
+		
 		
 
-		list_d(bool i = false, bool u = false) :head(nullptr), tail(nullptr), root(nullptr), inverse(i), unique(u)
+		list_d(bool i = false, bool u = false, bool t=false) :head(nullptr), tail(nullptr), root(nullptr), inverse(i), unique(u), thread(t)
 		{
 
 		}
@@ -186,6 +189,9 @@ namespace tsdt
 
 		bool add(T);
 		T rem(T);
+
+		void print();
+		void t_print();
 
 		bool t_add(T);
 		

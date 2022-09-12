@@ -188,6 +188,20 @@ template<class T, typename F> void list_d<T, F>::fell_tree(node_t<T>* p, bool le
 	}
 }
 
+template<class T, typename F> void list_d<T, F>::print_tree(node_t<T>* p)
+{
+	if (p->lc != nullptr) 
+	{
+		print_tree(p->lc);
+	}
+	std::cout << p->get() << std::endl;
+	if (p->rc != nullptr)
+	{
+		print_tree(p->rc);
+	}
+
+}
+
 template<class T,typename F>list_d<T,F>::~list_d()
 {
 	if (this->unique == false)
@@ -345,7 +359,55 @@ template<class T, typename F> bool list_d<T, F>::add(T d)
 
 template<class T, typename F> T list_d<T, F>::rem(T d)
 {
-	node_t<T>* curr = find_spot(d, this->head);
+	if (this->unique == false)
+	{
+		node_d<T>* curr = nullptr;
+		if (this->head->get() == d)
+		{
+			curr = head;
+			T ret = curr->get();
+			head = head->next;
+			delete curr;
+			return ret;
+		}
+		if (this->tail->get() == d)
+		{
+			curr = tail;
+			T ret = curr->get();
+			tail = tail->prev;
+			delete curr;
+			return ret;
+		}
+		node_d<T>* curr = contains(d);
+		curr->prev->next = curr->next;
+		curr->next->prev = curr->prev;
+		T ret = curr->get();
+		delete curr;
+		return ret;
+	}
+	else
+	{
+		node_t<T>* curr = find_spot(d, this->root);
+		
+	}
+	
+}
+
+template<class T, typename F> void list_d<T, F>::print()
+{
+	if (this->unique == false)
+	{
+		node_d<T>* curr = head;
+		while (curr != nullptr)
+		{
+			std::cout << curr->get() << std::endl;
+			curr = curr->next;
+		}
+	}
+	else
+	{
+		this->print_tree(this->root);
+	}
 }
 
 template<class T, typename F> bool list_d<T, F>::t_add(T d)

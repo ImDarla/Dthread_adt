@@ -11,4 +11,5 @@
 #include "framework.h"
 #include<functional>
 #include<semaphore>
+#include<iostream>
 #endif //PCH_H
