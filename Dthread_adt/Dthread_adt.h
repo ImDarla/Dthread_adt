@@ -192,7 +192,7 @@ namespace tsdt
 
 		
 
-		void print()
+		void print();
 
 		bool add(T);
 		
