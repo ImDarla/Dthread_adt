@@ -173,7 +173,10 @@ namespace tsdt
 
 		bool insert_t(node_t<T>* , T , bool);
 
+		void i_print();
 		
+		bool i_add(T);
+		T i_rem(T);
 
 	public:
 		
@@ -187,15 +190,13 @@ namespace tsdt
 
 		~list_d();
 
-		bool add(T);
-		T rem(T);
-
-		void print();
-		void t_print();
-
-		bool t_add(T);
 		
-		T t_rem(T);
+
+		void print()
+
+		bool add(T);
+		
+		T rem(T);
 
 	};
 

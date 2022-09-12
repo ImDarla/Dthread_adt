@@ -314,7 +314,7 @@ template<class T, typename F> bool list_d<T, F>::insert_t(node_t<T>* p, T d, boo
 
 
 
-template<class T, typename F> bool list_d<T, F>::add(T d)
+template<class T, typename F> bool list_d<T, F>::i_add(T d)
 {
 	if (this->unique == false)
 	{
@@ -357,7 +357,7 @@ template<class T, typename F> bool list_d<T, F>::add(T d)
 	}
 }
 
-template<class T, typename F> T list_d<T, F>::rem(T d)
+template<class T, typename F> T list_d<T, F>::i_rem(T d)
 {
 	if (this->unique == false)
 	{
@@ -393,7 +393,7 @@ template<class T, typename F> T list_d<T, F>::rem(T d)
 	
 }
 
-template<class T, typename F> void list_d<T, F>::print()
+template<class T, typename F> void list_d<T, F>::i_print()
 {
 	if (this->unique == false)
 	{
@@ -410,21 +410,52 @@ template<class T, typename F> void list_d<T, F>::print()
 	}
 }
 
-template<class T, typename F> bool list_d<T, F>::t_add(T d)
+template<class T, typename F> void list_d<T, F>::print()
 {
-	this->sem.acquire();
-	this->add(d);
-	this->sem.release();
+	if (this->thread)
+	{
+		this->sem.acquire();
+		this->i_print();
+		this->sem.release();
+	}
+	else
+	{
+		this->i_print();
+	}
+}
+
+template<class T, typename F> bool list_d<T, F>::add(T d)
+{
+	if (this->thread)
+	{
+		bool ret;
+		this->sem.aquire();
+		ret = this->i_add(d);
+		this->sem.release();
+		return ret;
+	}
+	else
+	{
+		return this->i_add(d);
+	}
 }
 
 
 
-template<class T, typename F> T list_d<T, F>::t_rem(T d)
+template<class T, typename F> T list_d<T, F>::rem(T d)
 {
-	this->sem.acquire();
-	T ret = this->rem();
-	this->sem.release();
-	return ret;
+	if (this->thread)
+	{
+		T ret;
+		this->sem.acquire();
+		ret = this->i_rem();
+		this->sem.release();
+		return ret;
+	}
+	else
+	{
+		return this->i_rem();
+	}
 }
 //REMOVE
 
