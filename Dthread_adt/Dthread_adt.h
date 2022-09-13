@@ -176,6 +176,7 @@ namespace tsdt
 		
 		node_d<T>* contains(T);
 		node_t<T>* find_spot(T, node_t<T>*);
+		node_t<T>* find_node(T, node_t<T>*);
 
 		void insert(node_d<T>*, node_d<T>*);
 		

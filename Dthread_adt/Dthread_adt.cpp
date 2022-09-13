@@ -308,6 +308,38 @@ template<class T, typename F> node_t<T>* list_d<T, F>::find_spot(T d, node_t<T>*
 
 }
 
+template<class T, typename F> node_t<T>* list_d<T, F>::find_node(T d, node_t<T>* p)//returns the node holding d
+{
+	//FIX add inverse
+	if (F(p->get(), d) == 0)
+	{
+		return p;
+	}
+	if (F(p->get(), d) < 0)
+	{
+		if (p->lc == nullptr)
+		{
+			return nullptr;
+		}
+		else
+		{
+			return this->find_spot(d, p->lc);
+		}
+	}
+	else
+	{
+		if (p->rc == nullptr)
+		{
+			return nullptr;
+		}
+		else
+		{
+			return this->find_spot(d, p->rc);
+		}
+	}
+
+}
+
 
 template<class T, typename F> node_d<T>* list_d<T, F>::contains(T d)
 {
@@ -438,7 +470,35 @@ template<class T, typename F> T list_d<T, F>::i_rem(T d)
 	}
 	else
 	{
-		node_t<T>* curr = find_spot(d, this->root);
+		node_t<T>* curr = find_node(d, this->root);
+		if (curr != nullptr)
+		{
+			if ((curr->lc == nullptr) && (curr->rc == nullptr))
+			{
+				T ret = curr->get();
+				if (curr->parent == nullptr)
+				{
+					delete curr;
+					return ret;
+				}
+				if (curr->parent->lc == curr)
+				{
+					curr->parent->lc = nullptr;
+					delete curr;
+					return ret;
+				}
+				else
+				{
+					curr->parent->rc = nullptr;
+					delete curr;
+					return ret;
+				}
+			}
+			else
+			{
+
+			}
+		}
 		
 	}
 	
