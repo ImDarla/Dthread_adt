@@ -26,6 +26,91 @@ template<class T>T  node_t<T>::get()
 }
 
 
+
+
+template<class T> bool list_s<T>::i_contains(T d)
+{
+	node_s<T>* curr = head;
+	while (curr != nullptr)
+	{
+		if (curr->get == d)
+		{
+			return true;
+		}
+		curr = curr->next;
+	}
+	return false;
+}
+
+template<class T> bool list_s<T>::ti_contains(T d)
+{
+	this->sem.acquire();
+	bool ret = this->contains();
+	this->sem.release();
+	return ret;
+}
+
+template<class T> void list_s<T>::si_push(T d)
+{
+	if (this->head == nullptr)
+	{
+		this->head = new node_s<T>(d);
+		this->tail = head;
+	}
+	else
+	{
+		node_s<T>* curr = new node_s<T>(d);
+		curr->next = this->head;
+		this->head = curr;
+	}
+}
+
+template<class T> void list_s<T>::qi_push(T d)
+{
+	if (this->head == nullptr)
+	{
+		this->head = new node_s<T>(d);
+		this->tail = head;
+	}
+	else
+	{
+		this->tail->next = new node_s<T>(d);
+		this->tail = this->tail->next;
+	}
+	
+}
+
+template<class T> T list_s<T>::i_pop()
+{
+	T ret = this->head->get();
+	node_s<T>* curr = this->head;
+	this->head = this->head->next;
+	delete curr;
+	return ret;
+}
+
+template<class T> void list_s<T>::tsi_push(T d)
+{
+	this->sem.acquire();
+	this->s_push(d);
+	this->sem.release();
+}
+
+template<class T> void list_s<T>::tqi_push(T d)
+{
+	this->sem.aquire();
+	this->q_push(d);
+	this->sem.release();
+}
+
+template <class T> T list_s<T>::ti_pop()
+{
+	this->sem.acquire();
+	T ret = this->pop();
+	this->sem.release();
+	return ret;
+}
+
 template<class T>list_s<T>::~list_s()
 {
 	node_s<T>* curr = this->head;
@@ -42,85 +127,51 @@ template<class T>list_s<T>::~list_s()
 
 template<class T> bool list_s<T>::contains(T d)
 {
-	node_s<T>* curr = head;
-	while (curr != nullptr)
+	if (this->thread == false)
 	{
-		if (curr->get == d)
-		{
-			return true;
-		}
-		curr = curr->next;
+		return this->i_contains(d);
 	}
-	return false;
-}
+	else
+	{
+		return this->ti_contains(d);
 
-template<class T> bool list_s<T>::t_contains(T d)
-{
-	this->sem.acquire();
-	bool ret = this->contains();
-	this->sem.release();
-	return ret;
+	}
 }
 
 template<class T> void list_s<T>::s_push(T d)
 {
-	if (this->head == nullptr)
+	if (this->thread == false)
 	{
-		this->head = new node_s<T>(d);
-		this->tail = head;
+		this->si_push(d);
 	}
 	else
 	{
-		node_s<T>* curr = new node_s<T>(d);
-		curr->next = this->head;
-		this->head = curr;
+		this->tsi_push(d);
 	}
 }
 
 template<class T> void list_s<T>::q_push(T d)
 {
-	if (this->head == nullptr)
+	if (this->thread == false)
 	{
-		this->head = new node_s<T>(d);
-		this->tail = head;
+		this->qi_push(d);
 	}
 	else
 	{
-		this->tail->next = new node_s<T>(d);
-		this->tail = this->tail->next;
+		this->tqi_push(d);
 	}
-	
 }
 
 template<class T> T list_s<T>::pop()
 {
-	T ret = this->head->get();
-	node_s<T>* curr = this->head;
-	this->head = this->head->next;
-	delete curr;
-	return ret;
-}
-
-template<class T> void list_s<T>::ts_push(T d)
-{
-	this->sem.acquire();
-	this->s_push(d);
-	this->sem.release();
-}
-
-template<class T> void list_s<T>::tq_push(T d)
-{
-	this->sem.aquire();
-	this->q_push(d);
-	this->sem.release();
-}
-
-template <class T> T list_s<T>::t_pop()
-{
-	this->sem.acquire();
-	T ret = this->pop();
-	this->sem.release();
-	return ret;
+	if (this->thread == false)
+	{
+		return this->i_pop();
+	}
+	else
+	{
+		return this->ti_pop();
+	}
 }
 
 template<class T, typename F> void list_d<T, F>::fell_tree(node_t<T>* p, bool left)

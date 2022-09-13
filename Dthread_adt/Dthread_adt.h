@@ -118,27 +118,36 @@ namespace tsdt
 		std::binary_semaphore sem{ 1 };
 		node_s<T>* head;
 		node_s<T>* tail;
+
+		bool thread;
 		
+		
+		bool i_contains(T);
+		bool ti_contains(T);
+
+
+		void si_push(T);
+		void qi_push(T);
+		T i_pop();
+
+		void tsi_push(T);
+		void tqi_push(T);
+		T ti_pop();
+
 	public:
-		list_s() :head(nullptr), tail(nullptr)
+		list_s(bool t=false) :head(nullptr), tail(nullptr), thread(t)
 		{
 
 		}
 
 		~list_s();
 
-	
 		bool contains(T);
-		bool t_contains(T);
-		
 
 		void s_push(T);
 		void q_push(T);
 		T pop();
-
-		void ts_push(T);
-		void tq_push(T);
-		T t_pop();
+		
 		
 
 	};
