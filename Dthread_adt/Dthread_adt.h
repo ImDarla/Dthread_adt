@@ -36,7 +36,7 @@ namespace tsdt
 
 		~node_s()
 		{
-
+			
 		}
 
 		T get();
@@ -99,7 +99,19 @@ namespace tsdt
 
 		~node_t()
 		{
-
+			if (this->parent != nullptr)
+			{
+				if (this->parent->lc == this)
+				{
+					this->parent->lc = nullptr;
+				}
+				else
+				{
+					this->parent->rc = nullptr;
+				}
+			}
+			
+			
 		}
 
 		T get();

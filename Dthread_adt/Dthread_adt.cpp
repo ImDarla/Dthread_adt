@@ -473,29 +473,77 @@ template<class T, typename F> T list_d<T, F>::i_rem(T d)
 		node_t<T>* curr = find_node(d, this->root);
 		if (curr != nullptr)
 		{
+			T ret = curr->get();
 			if ((curr->lc == nullptr) && (curr->rc == nullptr))
 			{
-				T ret = curr->get();
-				if (curr->parent == nullptr)
-				{
-					delete curr;
-					return ret;
-				}
-				if (curr->parent->lc == curr)
-				{
-					curr->parent->lc = nullptr;
-					delete curr;
-					return ret;
-				}
-				else
-				{
-					curr->parent->rc = nullptr;
-					delete curr;
-					return ret;
-				}
+				
+				delete curr;
+				return ret;
 			}
 			else
 			{
+				if (curr->lc == nullptr)
+				{
+					node_t<T>* o = curr->rc;
+					delete curr;
+					node_t<T>* n = find_spot(o->get(), this->root);
+					if (F(n->get(), o->get()) < 0)
+					{
+						n->lc = o;
+						o->parent = n;
+					}
+					else
+					{
+						n->rc = o;
+						o->parent = n;
+					}
+					return ret;
+					
+				}
+				if (curr->rc == nullptr)
+				{
+					node_t<T>* o = curr->lc;
+					delete curr;
+					node_t<T>* n = find_spot(o->get(), this->root);
+					if (F(n->get(), o->get()) < 0)
+					{
+						n->lc = o;
+						o->parent = n;
+					}
+					else
+					{
+						n->rc = o;
+						o->parent = n;
+					}
+					return ret;
+				}
+
+				node_t<T>* o = curr->lc;
+				node_t<T>* tmp = find_spot(o->get(), curr->rc);
+				if (F(tmp->get(), o->get()) < 0)
+				{
+					tmp->lc = o;
+					o->parent = tmp;
+				}
+				else
+				{
+					tmp->rc = o;
+					o->parent = tmp;
+				}
+				node_t<T>* n = curr->rc;
+				delete curr;
+				node_t<T>* n = find_spot(o->get(), this->root);
+				if (F(n->get(), o->get()) < 0)
+				{
+					n->lc = o;
+					o->parent = n;
+				}
+				else
+				{
+					n->rc = o;
+					o->parent = n;
+				}
+				return ret;
 
 			}
 		}
