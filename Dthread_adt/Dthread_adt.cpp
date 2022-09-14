@@ -448,8 +448,18 @@ template<class T, typename F> bool list_d<T, F>::i_add(T d)
 			}
 			else
 			{
-				return false;
-				//FIX implement
+				p = this->head;
+				while (p != nullptr)
+				{
+					if (F(p->next->get(), d) < 0)
+					{
+						break;
+					}
+					p = p->next;
+				}
+				node_d<T>* curr = new node_d<T>(d);
+				insert(p, curr);
+				return true;
 			}
 		}
 	}
