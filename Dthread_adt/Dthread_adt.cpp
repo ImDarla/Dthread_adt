@@ -33,7 +33,7 @@ template<class T> bool list_s<T>::i_contains(T d)
 	node_s<T>* curr = head;
 	while (curr != nullptr)
 	{
-		if (curr->get == d)
+		if (curr->get() == d)
 		{
 			return true;
 		}
@@ -45,14 +45,14 @@ template<class T> bool list_s<T>::i_contains(T d)
 template<class T> bool list_s<T>::ti_contains(T d)
 {
 	this->sem.acquire();
-	bool ret = this->contains();
+	bool ret = this->contains(d);
 	this->sem.release();
 	return ret;
 }
 
 template<class T> void list_s<T>::i_print()
 {
-	node_s<T>* curr = this->head();
+	node_s<T>* curr = this->head;
 	while (curr != nullptr)
 	{
 		std::cout << curr->get() << std::endl;
@@ -115,7 +115,7 @@ template<class T> void list_s<T>::tsi_push(T d)
 
 template<class T> void list_s<T>::tqi_push(T d)
 {
-	this->sem.aquire();
+	this->sem.acquire();
 	this->q_push(d);
 	this->sem.release();
 }
@@ -616,7 +616,31 @@ template<class T, typename F> void list_d<T, F>::i_print()
 	}
 }
 
-
+template<class T, typename F> bool list_d<T, F>::contains(T d)
+{
+	if (this->unique == false)
+	{
+		if (this->thread == false)
+		{
+			return this->contains(d);
+		}
+		else
+		{
+			return this->ti_contains(d);
+		}
+	}
+	else
+	{
+		if (this->thread == false)
+		{
+			return this->i_find_node(d, this->root);
+		}
+		else
+		{
+			return this->ti_find_node(d, this->root);
+		}
+	}
+}
 
 template<class T, typename F> void list_d<T, F>::print()
 {
