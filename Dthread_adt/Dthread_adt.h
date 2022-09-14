@@ -137,6 +137,9 @@ namespace tsdt
 		bool i_contains(T);
 		bool ti_contains(T);
 
+		void i_print();
+		void ti_print();
+
 
 		void si_push(T);
 		void qi_push(T);
@@ -155,6 +158,8 @@ namespace tsdt
 		~list_s();
 
 		bool contains(T);
+
+		void print();
 
 		void s_push(T);
 		void q_push(T);
@@ -186,9 +191,12 @@ namespace tsdt
 
 		void print_tree(node_t<T>*);
 		
-		node_d<T>* contains(T);
+		node_d<T>* i_contains(T);
 		node_t<T>* find_spot(T, node_t<T>*);
-		node_t<T>* find_node(T, node_t<T>*);
+		node_t<T>* i_find_node(T, node_t<T>*);
+
+		node_d<T>* ti_contains(T);
+		node_t<T>* ti_find_node(T, node_t<T>*);
 
 		void insert(node_d<T>*, node_d<T>*);
 		
@@ -212,7 +220,7 @@ namespace tsdt
 
 		~list_d();
 
-		
+		bool contains(T);
 
 		void print();
 

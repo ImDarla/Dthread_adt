@@ -50,6 +50,23 @@ template<class T> bool list_s<T>::ti_contains(T d)
 	return ret;
 }
 
+template<class T> void list_s<T>::i_print()
+{
+	node_s<T>* curr = this->head();
+	while (curr != nullptr)
+	{
+		std::cout << curr->get() << std::endl;
+		curr = curr->next;
+	}
+}
+
+template<class T> void list_s<T>::ti_print()
+{
+	this->sem.acquire();
+	this->i_print();
+	this->sem.release();
+}
+
 template<class T> void list_s<T>::si_push(T d)
 {
 	if (this->head == nullptr)
@@ -135,6 +152,18 @@ template<class T> bool list_s<T>::contains(T d)
 	{
 		return this->ti_contains(d);
 
+	}
+}
+
+template<class T> void list_s<T>::print()
+{
+	if (this->thread == false)
+	{
+		this->i_print();
+	}
+	else
+	{
+		this->ti_print();
 	}
 }
 
@@ -308,7 +337,7 @@ template<class T, typename F> node_t<T>* list_d<T, F>::find_spot(T d, node_t<T>*
 
 }
 
-template<class T, typename F> node_t<T>* list_d<T, F>::find_node(T d, node_t<T>* p)//returns the node holding d
+template<class T, typename F> node_t<T>* list_d<T, F>::i_find_node(T d, node_t<T>* p)//returns the node holding d
 {
 	//FIX add inverse
 	if (F(p->get(), d) == 0)
@@ -341,7 +370,7 @@ template<class T, typename F> node_t<T>* list_d<T, F>::find_node(T d, node_t<T>*
 }
 
 
-template<class T, typename F> node_d<T>* list_d<T, F>::contains(T d)
+template<class T, typename F> node_d<T>* list_d<T, F>::i_contains(T d)
 {
 	
 	node_d<T>* curr = head;
@@ -356,6 +385,24 @@ template<class T, typename F> node_d<T>* list_d<T, F>::contains(T d)
 	return curr;
 	
 	
+}
+
+template<class T, typename F> node_t<T>* list_d<T, F>::ti_find_node(T d, node_t<T>* p)
+{
+	bool ret;
+	this->sem.acquire();
+	ret=this->i_find_node(d, p);
+	this->sem.release();
+	return ret;
+}
+
+template<class T, typename F> node_d<T>* list_d<T, F>::ti_contains(T d)
+{
+	bool ret;
+	this->sem.acquire();
+	ret = this->i_contains(d);
+	this->sem.release();
+	return ret;
 }
 
 template<class T, typename F> void list_d<T, F>::insert(node_d<T>* a, node_d<T>* b)
@@ -568,6 +615,8 @@ template<class T, typename F> void list_d<T, F>::i_print()
 		this->print_tree(this->root);
 	}
 }
+
+
 
 template<class T, typename F> void list_d<T, F>::print()
 {
