@@ -229,40 +229,23 @@ template<class T, typename F> void list_d<T, F>::fell_tree(node_t<T>* p, bool le
 	}
 	else
 	{
-		if ((p->lc == nullptr) && (p->rc == nullptr))
+		if (p->lc != nullptr)
 		{
-			if (left)
-			{
-				p->parent->lc = nullptr;
-				delete p;
-			}
-			else
-			{
-				p->parent->rc = nullptr;
-				delete p;
-			}
+			this->fell_tree(p->lc, true);
+		}
+		if (p->rc != nullptr)
+		{
+			this->fell_tree(p->rc, false);
+
+		}
+		if (left)
+		{
+			p->parent->lc = nullptr;
+			delete p;
 		}
 		else
 		{
-			if (p->lc != nullptr)
-			{
-				this->fell_tree(p->lc, true);
-			}
-			if (p->rc != nullptr)
-			{
-				this->fell_tree(p->rc, false);
-
-			}
-			if (left)
-			{
-				p->parent->lc = nullptr;
-				delete p;
-			}
-			else
-			{
-				p->parent->rc = nullptr;
-				delete p;
-			}
+			p->parent->rc = nullptr;
 			delete p;
 		}
 	}
