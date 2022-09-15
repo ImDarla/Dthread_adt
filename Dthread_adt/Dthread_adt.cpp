@@ -10,17 +10,17 @@ using namespace tsdt;
 
 
 
-template<class T>T node_s<T>::get()
+template<class T>T& node_s<T>::get()
 {
 	return this->data;
 }
 
-template<class T>T node_d<T>::get()
+template<class T>T& node_d<T>::get()
 {
 	return this->data;
 }
 
-template<class T>T  node_t<T>::get()
+template<class T>T&  node_t<T>::get()
 {
 	return this->data;
 }
@@ -287,19 +287,19 @@ template<class T,typename F>list_d<T,F>::~list_d()
 	
 }
 
-template<class T, typename F> node_t<T>* list_d<T, F>::find_spot(T d, node_t<T>* p)//returns the parent for the new node
+template<class T, typename F> list_d<T, F>::bundle<T> list_d<T, F>::find_spot(T d, node_t<T>* p)//returns the parent for the new node
 {
 
 	//FIX add inverse
 	if (F(p->get(), d)== 0)
 	{
-		return nullptr;
+		return { nullptr, false };
 	}
 	if (F(p->get(), d) < 0)
 	{
 		if (p->lc == nullptr)
 		{
-			return p;
+			return { p, true };
 		}
 		else
 		{
@@ -310,7 +310,7 @@ template<class T, typename F> node_t<T>* list_d<T, F>::find_spot(T d, node_t<T>*
 	{
 		if (p->rc == nullptr)
 		{
-			return p;
+			return { p, false };
 		}
 		else
 		{
@@ -335,7 +335,7 @@ template<class T, typename F> node_t<T>* list_d<T, F>::i_find_node(T d, node_t<T
 		}
 		else
 		{
-			return this->find_spot(d, p->lc);
+			return this->i_find_node(d, p->lc);
 		}
 	}
 	else
@@ -346,7 +346,7 @@ template<class T, typename F> node_t<T>* list_d<T, F>::i_find_node(T d, node_t<T
 		}
 		else
 		{
-			return this->find_spot(d, p->rc);
+			return this->i_find_node(d, p->rc);
 		}
 	}
 
@@ -366,8 +366,6 @@ template<class T, typename F> node_d<T>* list_d<T, F>::i_contains(T d)
 		curr = curr->next;
 	}
 	return curr;
-	
-	
 }
 
 template<class T, typename F> node_t<T>* list_d<T, F>::ti_find_node(T d, node_t<T>* p)
@@ -404,15 +402,15 @@ template<class T, typename F> void list_d<T, F>::insert(node_d<T>* a, node_d<T>*
 
 }
 
-template<class T, typename F> bool list_d<T, F>::insert_t(node_t<T>* p, T d, bool left)//FIX different addition?
+template<class T, typename F> bool list_d<T, F>::insert_t(list_d<T, F>::bundle<T>& p, T d)//FIX different addition?
 {
-	if (p == nullptr)
+	if (p.parent == nullptr)
 	{
 		return false;
 	}
 	else
 	{
-		if (left)
+		if (p.left==true)
 		{
 			p->lc=new node_t<T>(d);
 		}
@@ -472,8 +470,8 @@ template<class T, typename F> bool list_d<T, F>::i_add(T d)
 		}
 		else
 		{
-			node_t<T>* p = find_spot(d, this->root);
-			return insert_t(this->root,d);
+			list_d<T, F>::bundle<T> p = find_spot(d, this->root);
+			return insert_t(p,d);
 		}
 		
 
@@ -526,16 +524,16 @@ template<class T, typename F> T list_d<T, F>::i_rem(T d)
 				{
 					node_t<T>* o = curr->rc;
 					delete curr;
-					node_t<T>* n = find_spot(o->get(), this->root);
-					if (F(n->get(), o->get()) < 0)
+					list_d<T, F>::bundle<T> n = find_spot(o->get(), this->root);
+					if (n.left==true)
 					{
-						n->lc = o;
-						o->parent = n;
+						n.parent->lc = o;
+						o->parent = n.parent;
 					}
 					else
 					{
-						n->rc = o;
-						o->parent = n;
+						n.parent->rc = o;
+						o->parent = n.parent;
 					}
 					return ret;
 					
@@ -544,20 +542,21 @@ template<class T, typename F> T list_d<T, F>::i_rem(T d)
 				{
 					node_t<T>* o = curr->lc;
 					delete curr;
-					node_t<T>* n = find_spot(o->get(), this->root);
-					if (F(n->get(), o->get()) < 0)
+					list_d<T, F>::bundle<T> n = find_spot(o->get(), this->root);
+					if (n.left == true)
 					{
-						n->lc = o;
-						o->parent = n;
+						n.parent->lc = o;
+						o->parent = n.parent;
 					}
 					else
 					{
-						n->rc = o;
-						o->parent = n;
+						n.parent->rc = o;
+						o->parent = n.parent;
 					}
 					return ret;
 				}
-
+				//FIX
+				/*
 				node_t<T>* o = curr->lc;
 				node_t<T>* tmp = find_spot(o->get(), curr->rc);
 				if (F(tmp->get(), o->get()) < 0)
@@ -584,6 +583,7 @@ template<class T, typename F> T list_d<T, F>::i_rem(T d)
 					o->parent = n;
 				}
 				return ret;
+				*/
 
 			}
 		}
@@ -681,6 +681,16 @@ template<class T, typename F> T list_d<T, F>::rem(T d)
 	{
 		return this->i_rem();
 	}
+}
+
+template<class T, class K> K& node_m<T, K>::get_key()
+{
+	return this->key;
+}
+
+template<class T, class K> T& node_m<T, K>::get_data()
+{
+	return this->data
 }
 //REMOVE
 

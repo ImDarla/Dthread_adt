@@ -39,7 +39,7 @@ namespace tsdt
 			
 		}
 
-		T get();
+		T& get();
 	};
 
 	/**
@@ -69,7 +69,7 @@ namespace tsdt
 
 		}
 
-		T get();
+		T& get();
 	};
 
 	/**
@@ -114,7 +114,7 @@ namespace tsdt
 			
 		}
 
-		T get();
+		T& get();
 	};
 
 	/**
@@ -169,6 +169,8 @@ namespace tsdt
 
 	};
 
+	
+
 	/**
 	* @brief list primitive as parent class of doubly linked list ADT, requires type and comparison function to be supplied, <0 if first argument is bigger, >0 if right argument is bigger
 	*
@@ -187,12 +189,18 @@ namespace tsdt
 		bool unique;
 		bool thread;
 
+		template<class T> struct bundle
+		{
+			node_t<T>* parent;
+			bool left;
+		};
+
 		void fell_tree(node_t<T>*, bool);
 
 		void print_tree(node_t<T>*);
 		
 		node_d<T>* i_contains(T);
-		node_t<T>* find_spot(T, node_t<T>*);
+		bundle<T> find_spot(T, node_t<T>*);
 		node_t<T>* i_find_node(T, node_t<T>*);
 
 		node_d<T>* ti_contains(T);
@@ -230,6 +238,33 @@ namespace tsdt
 
 	};
 
+
+	template<class T, class K> class node_m
+	{
+	private:
+		K key;
+		T data;
+	public:
+		node_m(K k, T d): key(k), data(d)
+		{
+
+		}
+		~node_m()
+		{
+
+		}
+		K& get_key();
+		T& get_data();
+	};
+
+	template<class T, class K, typename  F> class map
+	{
+	private:
+		list_d<node_m<T, K>, F> i_data;
+
+	public:
+
+	};
 
 	//REMOVE
 	
