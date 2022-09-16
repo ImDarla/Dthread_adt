@@ -209,7 +209,7 @@ namespace tsdt
 		void insert(node_d<T>*, node_d<T>*);
 		
 
-		bool insert_t(node_t<T>* , T , bool);
+		bool insert_t(list_d<T, F>::bundle<T>&, T);
 
 		void i_print();
 		
