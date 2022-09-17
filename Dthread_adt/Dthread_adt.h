@@ -239,32 +239,7 @@ namespace tsdt
 	};
 
 
-	template<class T, class K> class node_m
-	{
-	private:
-		K key;
-		T data;
-	public:
-		node_m(K k, T d): key(k), data(d)
-		{
-
-		}
-		~node_m()
-		{
-
-		}
-		K& get_key();
-		T& get_data();
-	};
-
-	template<class T, class K, typename  F> class map
-	{
-	private:
-		list_d<node_m<T, K>, F> i_data;
-
-	public:
-
-	};
+	
 
 	//REMOVE
 	
@@ -282,7 +257,7 @@ namespace tsdt
 	private:
 		T data;
 		std::binary_semaphore sem{ 1 };
-		s_var<T> assign(const s_var<T>&) const;
+		s_var<T> assign(const s_var<T>&);
 
 	public:
 		s_var(T d) :data(d)

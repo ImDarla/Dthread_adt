@@ -683,15 +683,7 @@ template<class T, typename F> T list_d<T, F>::rem(T d)
 	}
 }
 
-template<class T, class K> K& node_m<T, K>::get_key()
-{
-	return this->key;
-}
 
-template<class T, class K> T& node_m<T, K>::get_data()
-{
-	return this->data
-}
 //REMOVE
 
 
@@ -701,7 +693,7 @@ template<class T, class K> T& node_m<T, K>::get_data()
 
 
 
-template<class T> s_var<T> s_var<T>::assign(const s_var<T>& other) const
+template<class T> s_var<T> s_var<T>::assign(const s_var<T>& other) 
 {
 	return s_var<T>(other.get());
 }
