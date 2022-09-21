@@ -165,7 +165,10 @@ namespace tsdt
 		void q_push(T);
 		T pop();
 		
-		
+		class iterator : public std::iterator<std::input_iterator_tag, node_s<T>, node_s<T>, const node_s<T>*, node_s<T>>
+		{
+
+		};
 
 	};
 
