@@ -167,7 +167,36 @@ namespace tsdt
 		
 		class iterator : public std::iterator<std::input_iterator_tag, node_s<T>, node_s<T>, const node_s<T>*, node_s<T>>
 		{
+		private: node_s<T>* start;
+		public:
+			explicit iterator(node_s<T>* _start = 0) : start(_start)
+			{
 
+			}
+			iterator& operator++()
+			{
+				start = start->next;
+				return *this;
+			}
+			iterator operator++()
+			{
+				iterator ret = *this;
+				++(*this);
+				return ret;
+			}
+			bool operator==(iterator other) const
+			{
+				return this->start == other.start;
+			}
+			bool operator!=(iterator other) const
+			{
+				return !(*this == other);
+			}
+			reference operator*()
+			{
+				return start;
+			}
+				
 		};
 
 	};
